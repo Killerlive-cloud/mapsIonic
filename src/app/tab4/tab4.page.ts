@@ -3,17 +3,16 @@ import { Marcador } from '../class/marcador';
 import { Storage } from '@ionic/storage';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  selector: 'app-tab4',
+  templateUrl: 'tab4.page.html',
+  styleUrls: ['tab4.page.scss']
 })
-export class Tab3Page implements OnInit {
- 
+export class Tab4Page implements OnInit {
   ngOnInit()
   {
-   
+    this.polygon = false;
     this.polyline = false;
-    this.storage.get('polylines').then((val) => 
+    this.storage.get('marker').then((val) => 
     {
       let marcador : Marcador = JSON.parse(val);
       for (let i in marcador)
@@ -60,20 +59,25 @@ export class Tab3Page implements OnInit {
   agregarMarcador(evento){
     this.ingresarMarcador(parseFloat(evento.coords.lat), parseFloat(evento.coords.lng), evento.coords.title, evento.coords.description);
     //Almacenamiento en local storage
-    this.storage.set('polylines', JSON.stringify(this.marcadores) );
+    this.storage.set('marker', JSON.stringify(this.marcadores) );
     console.log(this.marcadores.length);
     //Creación del polígono
-     if(this.marcadores.length>0){
-        console.log("latA: " + this.latA);        //Creación de la línea
-        console.log("lontA: " + this.lngA);       //Creación de la línea
-        console.log("latB: " + this.latB);        //Creación de la línea
-        console.log("lontB: " + this.lngB);       //Creación de la línea
-       this.polyline = true;
-        this.latA = this.latB; 
-        this.lngA = this.lngB;
+     if(this.marcadores.length>=3){
+      this.paths=this.marcadores;
+      this.polygon=true;
+    //Creación de la línea
+     if(this.marcadores.length==4)
+      {
+        this.latA = parseFloat(evento.coords.lat);
+        this.lngA = parseFloat(evento.coords.lng);
+      }
+     if(this.marcadores.length==5)
+     {
        this.latB = parseFloat(evento.coords.lat);
        this.lngB = parseFloat(evento.coords.lng);
-      }
+       this.polyline = true;
+     }
+    }
+  }
 
-}
 }
